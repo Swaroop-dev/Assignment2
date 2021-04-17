@@ -25,6 +25,11 @@ mongoose.connect(process.env.DATABASE, {
 
 
 //routes
+const authRoutes=require("./routes/auth")
+const userRoutes=require("./routes/user")
+
+app.use("/api",authRoutes)
+app.use("/api",userRoutes)
 
 app.use(bodyParser.json())
 app.use(cors())
