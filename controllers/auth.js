@@ -5,6 +5,7 @@ var expressJwt = require("express-jwt");
 
 exports.signup = (req, res) => {
   const errors = validationResult(req);
+
   console.log(req.body)
   if (!errors.isEmpty()) {
     return res.status(422).json({
@@ -27,7 +28,7 @@ exports.signup = (req, res) => {
 };
 
 exports.signin = (req, res) => {
-  const { email, password } = req.body;
+  const { phoneNumber, password } = req.body;
 
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -35,24 +36,24 @@ exports.signin = (req, res) => {
       error: errors.array()[0].msg,
     });
   }
-  User.findOne({ email }, (err, user) => {
+  User.findOne({ phoneNumber }, (err, user) => {
     if (err) {
       return res.status(400).json({
-        error: "user email doesnot exist",
+        error: "user phone number does not exist",
       });
     }
     if (!user.authenticate(password)) {
       return res.status(401).json({
-        error: " email and password doesnot match",
+        error: " phone number and password doesnot match",
       });
     }
     //creating token
     const token = jwt.sign({ _id: user._id }, process.env.SECRET);
     //put token in cookie
     res.cookie("token", token, { expire: new Date() + 9999 });
-    const { _id, name, email, role } = user;
+    const { _id, name,phoneNumber, email, role } = user;
 
-    return res.json({ token, user: { _id, name, email, role } });
+    return res.json({ token, user: { _id, name,phoneNumber,email, role } });
   });
 };
 
