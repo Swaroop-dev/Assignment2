@@ -14,7 +14,20 @@ router.get('/game/:userId/games',isSignedIn,getGames)
 
 
 router.post('/game/creategame/:userId', isSignedIn,isAuthenticated,isAdmin,createGames)
-router.post('/game/addresult/:userid/:gameId', isSignedIn, isAuthenticated, isAdmin, addplayedGames)
+router.post(
+  '/game/addresult/:gameId/:userId',
+  [
+    check("player1", "player1 is required").isLength({ min: 3 }),
+    check("player2", "player2 is required").isLength({ min: 3 }),
+    check("score1", "score1 is required"),
+    check("score2", "score2 is required"),
+    check("result", "result is required").isBoolean(),
+  ],
+  isSignedIn,
+  isAuthenticated,
+  isAdmin,
+  addplayedGames
+);
 router.get('/game/leaderboard/:gameId',getLeaderBoard)
 
 
