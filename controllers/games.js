@@ -1,4 +1,5 @@
-const Game=require("../models/games")
+const Game = require("../models/games")
+const { check, validationResult } = require("express-validator");
 
 
 exports.getGamesById=(req,res,id,next)=>{
@@ -13,7 +14,7 @@ exports.getGamesById=(req,res,id,next)=>{
         })
     next()
 }
-
+        
 exports.getGames=(req,res)=>{
     Game.find().exec((err,games)=>{
         if(err){
@@ -21,7 +22,7 @@ exports.getGames=(req,res)=>{
                           error:"not able to find games"
                         })
             }
-            res.json({games})
+            res.json(games)
     })
 
 }
@@ -41,9 +42,23 @@ exports.createGames=(req,res)=>{
 
 }
 
-exports.addplayedGames=(req,res,id)=>{
+exports.addplayedGames = (req, res, id) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(422).json({
+          error: errors.array()[0].msg,
+        });
+    }
         Game.findByIdAndUpdate({_id:req.game._id},
-            { }
+            {$push:{gamesplayed:req.body}},
+            (err,gameadded)=>{
+                if(err){
+                    return res.status(400).json({
+                        error:"could not add game played with given gameid"
+                    })
+                }
+                res.json(gameadded)
+            }
             )
 }
 
