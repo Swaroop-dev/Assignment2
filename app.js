@@ -27,6 +27,7 @@ mongoose.connect(process.env.DATABASE, {
 //routes
 const authRoutes=require("./routes/auth")
 const userRoutes=require("./routes/user")
+const gameRoutes=require('./routes/games')
 
 
 
@@ -36,6 +37,7 @@ app.use(cookieParser())
 
 app.use("/api",authRoutes)
 app.use("/api",userRoutes)
+app.use("/api",gameRoutes)
 
 
 
